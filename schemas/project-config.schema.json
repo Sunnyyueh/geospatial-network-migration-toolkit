@@ -1,0 +1,189 @@
+{
+  "$defs": {
+    "AdapterConfig": {
+      "additionalProperties": false,
+      "description": "Adapter kind and backend-specific JSON options.",
+      "properties": {
+        "kind": {
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_-]*$",
+          "title": "Kind",
+          "type": "string"
+        },
+        "options": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Options",
+          "type": "object"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "AdapterConfig",
+      "type": "object"
+    },
+    "DatasetConfig": {
+      "additionalProperties": false,
+      "description": "One logical source dataset and its managed workspace-relative path.",
+      "properties": {
+        "geometry_field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Geometry Field"
+        },
+        "id": {
+          "pattern": "^[a-z0-9][a-z0-9.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "path": {
+          "format": "path",
+          "title": "Path",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "path"
+      ],
+      "title": "DatasetConfig",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "ReportingConfig": {
+      "additionalProperties": false,
+      "description": "Artifact directory and requested report formats.",
+      "properties": {
+        "formats": {
+          "default": [
+            "json"
+          ],
+          "items": {
+            "enum": [
+              "json",
+              "csv",
+              "markdown",
+              "html"
+            ],
+            "type": "string"
+          },
+          "title": "Formats",
+          "type": "array"
+        },
+        "output_directory": {
+          "default": "outputs",
+          "format": "path",
+          "title": "Output Directory",
+          "type": "string"
+        }
+      },
+      "title": "ReportingConfig",
+      "type": "object"
+    },
+    "RuntimeConfig": {
+      "additionalProperties": false,
+      "description": "Portable execution controls.",
+      "properties": {
+        "batch_size": {
+          "default": 1000,
+          "maximum": 100000,
+          "minimum": 1,
+          "title": "Batch Size",
+          "type": "integer"
+        }
+      },
+      "title": "RuntimeConfig",
+      "type": "object"
+    },
+    "SourceConfig": {
+      "additionalProperties": false,
+      "description": "Source adapter, workspace, and ordered logical datasets.",
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/AdapterConfig"
+        },
+        "datasets": {
+          "items": {
+            "$ref": "#/$defs/DatasetConfig"
+          },
+          "title": "Datasets",
+          "type": "array"
+        },
+        "workspace": {
+          "format": "path",
+          "title": "Workspace",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapter",
+        "workspace",
+        "datasets"
+      ],
+      "title": "SourceConfig",
+      "type": "object"
+    },
+    "TargetConfig": {
+      "additionalProperties": false,
+      "description": "Target adapter and staging workspace.",
+      "properties": {
+        "adapter": {
+          "$ref": "#/$defs/AdapterConfig"
+        },
+        "workspace": {
+          "format": "path",
+          "title": "Workspace",
+          "type": "string"
+        }
+      },
+      "required": [
+        "adapter",
+        "workspace"
+      ],
+      "title": "TargetConfig",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Fully validated configuration for one migration project.",
+  "properties": {
+    "config_version": {
+      "const": 1,
+      "title": "Config Version",
+      "type": "integer"
+    },
+    "project_name": {
+      "title": "Project Name",
+      "type": "string"
+    },
+    "reporting": {
+      "$ref": "#/$defs/ReportingConfig"
+    },
+    "runtime": {
+      "$ref": "#/$defs/RuntimeConfig"
+    },
+    "source": {
+      "$ref": "#/$defs/SourceConfig"
+    },
+    "target": {
+      "$ref": "#/$defs/TargetConfig"
+    }
+  },
+  "required": [
+    "config_version",
+    "project_name",
+    "source",
+    "target"
+  ],
+  "title": "ProjectConfig",
+  "type": "object"
+}

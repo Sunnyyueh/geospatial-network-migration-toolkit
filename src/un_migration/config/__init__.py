@@ -14,8 +14,15 @@ from un_migration.config.models import (
     SourceConfig,
     TargetConfig,
 )
+from un_migration.config.render import (
+    DEFAULT_SECRET_KEYS,
+    project_config_schema,
+    render_config,
+    render_schema,
+)
 
 __all__ = [
+    "DEFAULT_SECRET_KEYS",
     "AdapterConfig",
     "DatasetConfig",
     "ProjectConfig",
@@ -30,5 +37,8 @@ __all__ = [
     "load_config",
     "load_raw_config",
     "parse_override",
+    "project_config_schema",
     "redact_secrets",
+    "render_config",
+    "render_schema",
 ]
