@@ -1,3 +1,4 @@
+from un_migration.filters.arcpy import DelimitField, compile_arcpy
 from un_migration.filters.ast import (
     And,
     Compare,
@@ -22,6 +23,7 @@ __all__ = [
     "Compare",
     "CompareOperator",
     "CompiledSql",
+    "DelimitField",
     "Expression",
     "Field",
     "InList",
@@ -32,6 +34,7 @@ __all__ = [
     "Parameter",
     "Scalar",
     "SqlDialect",
+    "compile_arcpy",
     "compile_sql",
     "evaluate",
     "normalize",
