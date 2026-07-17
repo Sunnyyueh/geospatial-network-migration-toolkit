@@ -6,6 +6,10 @@ The toolkit is designed for infrastructure networks such as water, wastewater, s
 
 For Utility Network projects, the toolkit supports a safer and more repeatable way to migrate selected records from a legacy source system into a staging or quality-control environment. For organizations that use enterprise deployment workflows, the same process can be extended into a recommended versioned review path before production reconciliation.
 
+For schema mapping, Data Reference workbook validation, asset group/type checks, attribute-rule readiness, and dirty-area classification, see the companion foundational QA project:
+
+`utility-network-schema-qa-toolkit`
+
 This repository is based on generalized migration patterns and public-safe examples only. It does not include client data, company infrastructure details, server URLs, credentials, internal scripts, proprietary schemas, or confidential deliverables.
 
 ## Project Independence and Open-Source Scope
@@ -41,7 +45,7 @@ This toolkit can support:
 - Incremental migration of newly created or recently modified utility records.
 - Water, wastewater, and stormwater Utility Network implementation support.
 - Data loading worksheet preparation.
-- Source-to-target schema mapping review.
+- Migration workflow orchestration based on validated source-to-target mappings.
 - Attribute-filtered data extraction.
 - Intermediate asset package or staging workspace loading.
 - Recommended versioned Utility Network append workflows for teams that use enterprise production deployment.
@@ -53,7 +57,7 @@ This toolkit can support:
 The planned toolkit provides a repeatable migration workflow:
 
 1. Read a migration configuration file.
-2. Read a source-to-target data reference table.
+2. Read validated source-to-target mapping and Data Reference configuration.
 3. Apply a configurable source filter to identify the records that should be migrated or reviewed.
 4. Update data loading references for the current run.
 5. Load source records into a target staging workspace or empty asset package.
@@ -63,7 +67,23 @@ The planned toolkit provides a repeatable migration workflow:
 9. Produce QA/QC reports for analysts and project leads.
 10. Optionally notify designated reviewers when errors occur.
 
-The toolkit is intended to support a controlled migration pattern: load into a staging workspace first, review the result, then optionally use a named version or branch version when production deployment, multi-user editing, or formal reconcile/post workflows are required.
+The toolkit is intended to support a controlled migration pattern: validate schema and QA assumptions first, load into a staging workspace, review the result, then optionally use a named version or branch version when production deployment, multi-user editing, or formal reconcile/post workflows are required.
+
+## Companion Foundation QA Layer
+
+This migration toolkit is designed to work downstream of a schema QA layer. The recommended separation is:
+
+```text
+utility-network-schema-qa-toolkit
+  -> validates schema mapping, domains, asset groups/types, Data Reference configuration,
+     attribute-rule readiness, network rules, dirty areas, and QA reports
+
+geospatial-network-migration-toolkit
+  -> uses validated mappings and configuration to support migration planning,
+     filtering, staging, loading, review, and optional deployment workflows
+```
+
+This separation keeps the migration workflow generic while allowing Utility Network-specific schema QA to remain focused and reusable.
 
 ## Technical Capabilities Reflected in Public Conference Workflows
 
