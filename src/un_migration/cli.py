@@ -10,6 +10,15 @@ from typing import Annotated
 import typer
 
 from un_migration.api import package_info
+from un_migration.config.loader import load_config
+from un_migration.config.models import ProjectConfig
+from un_migration.config.render import (
+    project_config_schema,
+    render_config,
+    render_schema,
+)
+from un_migration.domain.errors import ConfigurationError
+from un_migration.domain.serialization import canonical_json
 
 app = typer.Typer(
     add_completion=False,
@@ -17,6 +26,11 @@ app = typer.Typer(
     no_args_is_help=False,
     help="Plan, run, validate, and document geospatial network migrations.",
 )
+config_app = typer.Typer(
+    no_args_is_help=True,
+    help="Validate and inspect project configuration.",
+)
+app.add_typer(config_app, name="config")
 
 JsonOption = Annotated[
     bool,
@@ -30,6 +44,14 @@ def _write(payload: Mapping[str, object], as_json: bool) -> None:
         return
     for key, value in payload.items():
         typer.echo(f"{key}: {value}")
+
+
+def _load_or_exit(path: Path, as_json: bool) -> ProjectConfig:
+    try:
+        return load_config(path)
+    except ConfigurationError as error:
+        _write({"valid": False, "error": error.to_dict()}, as_json)
+        raise typer.Exit(code=2) from None
 
 
 @app.callback()
@@ -65,6 +87,41 @@ def doctor(as_json: JsonOption = False) -> None:
     _write(payload, as_json)
     if not python_supported or not working_directory_writable:
         raise typer.Exit(code=1)
+
+
+@config_app.command("validate")
+def config_validate(
+    path: Path,
+    as_json: JsonOption = False,
+) -> None:
+    """Validate a YAML or JSON project configuration."""
+
+    config = _load_or_exit(path, as_json)
+    _write(
+        {
+            "valid": True,
+            "project_name": config.project_name,
+        },
+        as_json,
+    )
+
+
+@config_app.command("render")
+def config_render(path: Path) -> None:
+    """Render a resolved project configuration with secrets redacted."""
+
+    config = _load_or_exit(path, True)
+    typer.echo(render_config(config))
+
+
+@config_app.command("schema")
+def config_schema(as_json: JsonOption = False) -> None:
+    """Print the generated ProjectConfig JSON Schema."""
+
+    if as_json:
+        typer.echo(canonical_json(project_config_schema()))
+        return
+    typer.echo(render_schema(), nl=False)
 
 
 if __name__ == "__main__":
