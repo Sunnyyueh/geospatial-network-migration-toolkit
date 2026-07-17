@@ -26,6 +26,7 @@ dev = [
   "pytest-cov>=5,<7",
   "ruff>=0.5,<1",
   "twine>=5,<7",
+  "types-PyYAML>=6,<7",
 ]
 
 [project.scripts]
