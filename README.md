@@ -10,8 +10,6 @@ For schema mapping, Data Reference workbook validation, asset group/type checks,
 
 `utility-network-schema-qa-toolkit`
 
-This repository is based on generalized migration patterns and public-safe examples only. It does not include client data, company infrastructure details, server URLs, credentials, internal scripts, proprietary schemas, or confidential deliverables.
-
 ## Why This Toolkit Matters
 
 Many utilities still maintain authoritative assets in legacy GIS network structures while transitioning to modern Utility Network platforms. That transition is often slow because migration work requires repeated manual steps:
@@ -77,11 +75,11 @@ geospatial-network-migration-toolkit
 
 This separation keeps the migration workflow generic while allowing Utility Network-specific schema QA to remain focused and reusable.
 
-## Technical Capabilities Reflected in Public Conference Workflows
+## Engineering and Utility Network Readiness Considerations
 
-The toolkit roadmap is informed by public Utility Network conference workflows covering water, wastewater, and stormwater implementation patterns. These workflows highlight that successful migration is not only a loading task; it also requires readiness assessment, Foundation alignment, dirty-area review, rules management, subnetwork configuration, and tracing validation.
+Successful migration is not only a loading task. It also requires readiness assessment, Foundation alignment, dirty-area review, rules management, subnetwork configuration, and tracing validation across water, wastewater, and stormwater networks.
 
-Planned public-safe capabilities include:
+Planned capabilities include:
 
 - Migration readiness assessment for connectivity, simple vertices, unknown asset types, overlapping features, and domain coverage.
 - Foundation crosswalk validation for local asset groups, asset types, subtypes, and domains.
@@ -454,14 +452,14 @@ geospatial-network-migration-toolkit/
 
 ## Security and Confidentiality
 
-This toolkit should never store production credentials, server URLs, or confidential database paths in source code.
+Keep credentials, tokens, secured URLs, connection strings, authentication profiles, and sensitive infrastructure data out of source control.
 
 Recommended practices:
 
 - Use environment variables for secured URLs and authentication profiles.
 - Keep local connection files out of Git.
 - Use synthetic or public sample data.
-- Redact client, employer, and infrastructure identifiers from examples.
+- Replace sensitive asset and infrastructure identifiers with generic placeholders.
 - Do not commit logs that contain credentials, tokens, internal URLs, or protected asset information.
 - Review sample outputs before publication.
 
