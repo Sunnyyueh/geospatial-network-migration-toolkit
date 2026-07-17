@@ -1,0 +1,62 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "geospatial-network-migration-toolkit"
+dynamic = ["version"]
+description = "Plan, run, validate, and document geospatial network migrations."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [{ name = "Sunny Yueh" }]
+dependencies = [
+  "jinja2>=3.1,<4",
+  "pydantic>=2.7,<3",
+  "PyYAML>=6,<7",
+  "typer>=0.12,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2,<2",
+  "hypothesis>=6.100,<7",
+  "mypy>=1.10,<2",
+  "pytest>=8.2,<9",
+  "pytest-cov>=5,<7",
+  "ruff>=0.5,<1",
+  "twine>=5,<7",
+]
+
+[project.scripts]
+un-migrate = "un_migration.cli:app"
+
+[tool.hatch.version]
+path = "src/un_migration/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/un_migration"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+files = ["src/un_migration"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-config --strict-markers"
+
+[tool.coverage.run]
+source = ["un_migration"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 85
