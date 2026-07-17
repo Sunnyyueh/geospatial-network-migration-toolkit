@@ -24,9 +24,18 @@ from un_migration.domain.identity import (
     StepId,
     Uuid7LikeGenerator,
 )
+from un_migration.domain.status import (
+    AcceptanceStatus,
+    FindingStatus,
+    RunState,
+    Severity,
+    can_transition,
+    highest_severity,
+)
 from un_migration.domain.time import Clock, FixedClock, SystemClock
 
 __all__ = [
+    "AcceptanceStatus",
     "ArtifactId",
     "CapabilityError",
     "Clock",
@@ -36,6 +45,7 @@ __all__ = [
     "ErrorContext",
     "FilterSyntaxError",
     "FindingId",
+    "FindingStatus",
     "FixedClock",
     "IdGenerator",
     "IntegrityError",
@@ -44,7 +54,9 @@ __all__ = [
     "MigrationError",
     "NotificationError",
     "RunId",
+    "RunState",
     "SequenceIdGenerator",
+    "Severity",
     "StableId",
     "StagingError",
     "StepId",
@@ -52,4 +64,6 @@ __all__ = [
     "TransformationError",
     "Uuid7LikeGenerator",
     "ValidationExecutionError",
+    "can_transition",
+    "highest_severity",
 ]
