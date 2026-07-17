@@ -1,3 +1,8 @@
+from un_migration.config.environment import (
+    SecretRegistry,
+    interpolate_environment,
+    redact_secrets,
+)
 from un_migration.config.models import (
     AdapterConfig,
     DatasetConfig,
@@ -14,6 +19,9 @@ __all__ = [
     "ProjectConfig",
     "ReportingConfig",
     "RuntimeConfig",
+    "SecretRegistry",
     "SourceConfig",
     "TargetConfig",
+    "interpolate_environment",
+    "redact_secrets",
 ]
