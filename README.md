@@ -12,14 +12,6 @@ For schema mapping, Data Reference workbook validation, asset group/type checks,
 
 This repository is based on generalized migration patterns and public-safe examples only. It does not include client data, company infrastructure details, server URLs, credentials, internal scripts, proprietary schemas, or confidential deliverables.
 
-## Project Independence and Open-Source Scope
-
-This is an independent personal open-source project. It is not an employer-owned product, client deliverable, or reproduction of any private implementation.
-
-The project is inspired by public geospatial infrastructure concepts, publicly documented GIS network migration patterns, and professional experience with utility data modernization. All examples, templates, test fixtures, and sample outputs should be created from synthetic data, public data, or generalized schemas that do not identify any client, employer, secured system, or confidential project.
-
-The purpose of the project is to provide reusable open-source tooling for the broader GIS and utility community, not to publish or expose private operational systems.
-
 ## Why This Toolkit Matters
 
 Many utilities still maintain authoritative assets in legacy GIS network structures while transitioning to modern Utility Network platforms. That transition is often slow because migration work requires repeated manual steps:
