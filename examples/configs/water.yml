@@ -1,0 +1,22 @@
+config_version: 1
+project_name: Synthetic water network migration
+source:
+  adapter:
+    kind: csv
+    options: {}
+  workspace: examples/data
+  datasets:
+    - id: water-mains
+      path: water_mains.csv
+target:
+  adapter:
+    kind: filesystem
+    options: {}
+  workspace: outputs/staging
+reporting:
+  output_directory: outputs
+  formats:
+    - json
+    - markdown
+runtime:
+  batch_size: 2

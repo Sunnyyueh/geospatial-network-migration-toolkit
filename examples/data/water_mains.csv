@@ -1,0 +1,6 @@
+asset_id,diameter,material,active,installed_on
+WM-001,12,Ductile Iron,true,1998-04-15
+WM-002,8,PVC,true,2007-09-03
+WM-003,6,Copper,false,1982-11-22
+WM-004,16,Steel,true,2015-06-30
+WM-005,10,PVC,true,2022-01-18

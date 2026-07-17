@@ -9,6 +9,7 @@ from typing import Annotated
 
 import typer
 
+from un_migration.adapters.filesystem import CsvSourceReader
 from un_migration.api import package_info
 from un_migration.config.loader import load_config
 from un_migration.config.models import ProjectConfig
@@ -17,8 +18,11 @@ from un_migration.config.render import (
     render_config,
     render_schema,
 )
-from un_migration.domain.errors import ConfigurationError
+from un_migration.domain.errors import CapabilityError, ConfigurationError
+from un_migration.domain.identity import DatasetId
+from un_migration.domain.schema import DatasetInventory, DatasetRef
 from un_migration.domain.serialization import canonical_json
+from un_migration.inventory import InventoryService
 
 app = typer.Typer(
     add_completion=False,
@@ -31,6 +35,11 @@ config_app = typer.Typer(
     help="Validate and inspect project configuration.",
 )
 app.add_typer(config_app, name="config")
+inventory_app = typer.Typer(
+    no_args_is_help=True,
+    help="Inspect and compare dataset inventories.",
+)
+app.add_typer(inventory_app, name="inventory")
 
 JsonOption = Annotated[
     bool,
@@ -122,6 +131,87 @@ def config_schema(as_json: JsonOption = False) -> None:
         typer.echo(canonical_json(project_config_schema()))
         return
     typer.echo(render_schema(), nl=False)
+
+
+def _inventory_payload(
+    inventory: DatasetInventory,
+    checksum_algorithm: str,
+    checksum_digest: str,
+) -> dict[str, object]:
+    geometry: dict[str, object] | None = None
+    if inventory.geometry is not None:
+        geometry = {
+            "type": inventory.geometry.type.value,
+            "spatial_reference": inventory.geometry.spatial_reference,
+            "has_z": inventory.geometry.has_z,
+            "has_m": inventory.geometry.has_m,
+        }
+    return {
+        "dataset": {
+            "id": str(inventory.dataset.id),
+            "physical_name": inventory.dataset.physical_name,
+        },
+        "fields": [
+            {
+                "name": field.name,
+                "type": field.type.value,
+                "nullable": field.nullable,
+                "length": field.length,
+                "precision": field.precision,
+                "scale": field.scale,
+            }
+            for field in inventory.fields
+        ],
+        "feature_count": inventory.feature_count,
+        "geometry": geometry,
+        "fingerprint": {
+            "algorithm": checksum_algorithm,
+            "digest": checksum_digest,
+        },
+    }
+
+
+@inventory_app.command("source")
+def inventory_source(
+    path: Path,
+    as_json: JsonOption = False,
+) -> None:
+    """Collect deterministic source dataset inventory."""
+
+    config = _load_or_exit(path, as_json)
+    if config.source.adapter.kind != "csv":
+        error = CapabilityError(
+            code="adapter.unsupported",
+            message=(f"Source adapter is not available: {config.source.adapter.kind}"),
+            guidance="Use the csv adapter for this release slice.",
+        )
+        _write({"error": error.to_dict()}, as_json)
+        raise typer.Exit(code=4)
+
+    source = CsvSourceReader(
+        config.source.workspace,
+        config.source.datasets,
+    )
+    datasets = tuple(
+        DatasetRef(DatasetId(item.id), item.path.as_posix())
+        for item in config.source.datasets
+    )
+    result = InventoryService(source).collect(datasets)
+    payload = {
+        "adapter": {
+            "name": result.adapter.adapter_name,
+            "operations": sorted(result.adapter.operations),
+        },
+        "datasets": [
+            _inventory_payload(
+                inventory,
+                result.fingerprints[inventory.dataset.id].algorithm,
+                result.fingerprints[inventory.dataset.id].digest,
+            )
+            for inventory in result.inventories
+        ],
+    }
+    _write(payload, as_json)
 
 
 if __name__ == "__main__":
