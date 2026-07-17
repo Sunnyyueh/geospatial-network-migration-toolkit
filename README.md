@@ -82,6 +82,21 @@ Planned public-safe capabilities include:
 - Version compatibility checks for ArcGIS Pro, Enterprise, Utility Network, database, and Python environment dependencies.
 - External system integration notes for asset management, modeling, inspection, and dashboard workflows.
 
+## Documentation and Templates
+
+This repository also includes open-source documentation templates so the toolkit can support both technical automation and human review workflows in one project.
+
+Included documentation assets:
+
+- [Documentation framework](docs/documentation-framework.md)
+- [Migration plan template](templates/migration-plan-template.md)
+- [Data readiness checklist](templates/data-readiness-checklist.md)
+- [Filter configuration template](templates/filter-configuration-template.yml)
+- [QA/QC checklist](templates/qa-qc-checklist.md)
+- [Validation report template](templates/validation-report-template.md)
+
+These templates are intentionally generic. They are designed for public, reusable migration planning and QA/QC workflows and should be populated only with synthetic data, public data, or organization-approved non-confidential information.
+
 ## Main Toolkit Input and Output
 
 ### Input
@@ -359,11 +374,32 @@ un_migration/
   cli.py
 ```
 
+Planned repository structure:
+
+```text
+geospatial-network-migration-toolkit/
+  README.md
+  docs/
+    documentation-framework.md
+  templates/
+    migration-plan-template.md
+    data-readiness-checklist.md
+    filter-configuration-template.yml
+    qa-qc-checklist.md
+    validation-report-template.md
+  un_migration/
+    ...
+```
+
 ## Roadmap
 
 ### Version 0.1.0
 
 - Public README.
+- Documentation framework.
+- Migration plan template.
+- Data readiness checklist.
+- QA/QC checklist.
 - Project structure.
 - CLI skeleton.
 - Data reference table parser.
@@ -377,6 +413,8 @@ un_migration/
 
 - Source-to-target mapping validator.
 - Foundation crosswalk validator.
+- Source-to-target mapping template.
+- Filter configuration template.
 - Required field and domain validation.
 - Feature count comparison.
 - Version compatibility check.
@@ -398,6 +436,7 @@ un_migration/
 - Documented end-to-end migration workflow.
 - Documented proof-of-concept subset workflow.
 - Documented terminal-assignment support for directional sewer networks.
+- Stable public documentation and template set.
 - Public examples and tutorials.
 - PyPI release suitable for external evaluation.
 

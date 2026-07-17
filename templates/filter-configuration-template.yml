@@ -1,0 +1,41 @@
+# Filter Configuration Template
+#
+# Use configurable filters to select records for migration, validation, or QA/QC.
+# Field names and values below are examples only. Adapt them to your own public,
+# synthetic, or organization-approved schema.
+
+filters:
+  active_assets:
+    expression: "life_cycle_status = 'Active'"
+    purpose: "Select active operational assets."
+    required: false
+
+  material_review:
+    expression: "material IN ('PVC', 'Ductile Iron')"
+    purpose: "Review selected material values before target domain mapping."
+    required: false
+
+  recent_additions:
+    expression: "added_date >= DATE '2026-01-01'"
+    purpose: "Select records added after a defined project date."
+    required: false
+
+  last_added_date_review:
+    expression: "last_added_date >= DATE '2026-01-01'"
+    purpose: "Review records with recent last-added metadata."
+    required: false
+
+  created_user_review:
+    expression: "created_user = 'field_editor'"
+    purpose: "Review records created by a specific editing workflow or user group."
+    required: false
+
+  last_added_user_review:
+    expression: "last_added_user = 'field_editor'"
+    purpose: "Review records last added by a specific editing workflow or user group."
+    required: false
+
+  last_edited_user_review:
+    expression: "last_edited_user IN ('editor_a', 'editor_b')"
+    purpose: "Review records last edited by selected users or user groups."
+    required: false
