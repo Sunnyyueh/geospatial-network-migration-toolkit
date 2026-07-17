@@ -25,9 +25,10 @@ from un_migration.domain.errors import (
     MappingError,
     MigrationError,
 )
-from un_migration.domain.identity import DatasetId
+from un_migration.domain.identity import DatasetId, RunId
 from un_migration.domain.schema import DatasetInventory, DatasetRef
 from un_migration.domain.serialization import canonical_json
+from un_migration.domain.status import AcceptanceStatus
 from un_migration.filters import (
     SqlDialect,
     compile_arcpy,
@@ -38,6 +39,7 @@ from un_migration.filters import (
 )
 from un_migration.inventory import InventoryService
 from un_migration.mapping import load_reference, normalize_reference
+from un_migration.workflow import run_portable
 
 app = typer.Typer(
     add_completion=False,
@@ -65,6 +67,11 @@ filter_app = typer.Typer(
     help="Validate and explain safe source filters.",
 )
 app.add_typer(filter_app, name="filter")
+run_app = typer.Typer(
+    no_args_is_help=True,
+    help="Execute managed migration workflows.",
+)
+app.add_typer(run_app, name="run")
 
 JsonOption = Annotated[
     bool,
@@ -88,6 +95,14 @@ ParametersOption = Annotated[
         "--parameters-json",
         help="JSON object containing named filter parameter values.",
     ),
+]
+RunIdOption = Annotated[
+    str | None,
+    typer.Option("--run-id", help="Stable ID for the managed run directory."),
+]
+FilterOption = Annotated[
+    str | None,
+    typer.Option("--filter", help="Safe source filter expression."),
 ]
 
 
@@ -449,6 +464,74 @@ def filter_explain(
         },
         as_json,
     )
+
+
+@run_app.command("portable")
+def run_portable_command(
+    config_path: Path,
+    reference_path: Path,
+    run_id: RunIdOption = None,
+    filter_text: FilterOption = None,
+    as_json: JsonOption = False,
+) -> None:
+    """Run a managed CSV-to-CSV staging migration with evidence reports."""
+
+    config = _load_or_exit(config_path, as_json)
+    try:
+        reference = load_reference(reference_path)
+    except MappingError as error:
+        _exit_error(error, as_json, valid=False)
+        return
+    try:
+        normalized_run_id = RunId(run_id) if run_id is not None else None
+    except ValueError:
+        _exit_error(
+            ConfigurationError(
+                code="run.id",
+                message=f"Run ID is invalid: {run_id!r}.",
+                guidance="Use letters, digits, dots, and hyphens.",
+            ),
+            as_json,
+            valid=False,
+        )
+        return
+    try:
+        result = run_portable(
+            config,
+            reference,
+            run_id=normalized_run_id,
+            filter_text=filter_text,
+        )
+    except MigrationError as error:
+        _exit_error(error, as_json, valid=False)
+        return
+    summary = result.summary
+    _write(
+        {
+            "run_id": str(summary.run.id),
+            "state": summary.run.state.value,
+            "acceptance": summary.acceptance.value,
+            "metrics": {
+                "selected": summary.metrics.selected,
+                "transformed": summary.metrics.transformed,
+                "staged": summary.metrics.staged,
+                "rejected": summary.metrics.rejected,
+                "validated": summary.metrics.validated,
+            },
+            "artifact_paths": [artifact.path for artifact in result.artifacts],
+            "notification": {
+                "provider": result.notification.provider,
+                "message_id": result.notification.message_id,
+                "accepted": result.notification.accepted,
+            },
+        },
+        as_json,
+    )
+    if summary.acceptance in {
+        AcceptanceStatus.REJECTED,
+        AcceptanceStatus.INCOMPLETE,
+    }:
+        raise typer.Exit(code=3)
 
 
 if __name__ == "__main__":

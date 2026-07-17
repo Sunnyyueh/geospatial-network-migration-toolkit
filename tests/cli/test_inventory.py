@@ -45,7 +45,7 @@ def test_inventory_source_emits_complete_json(tmp_path: Path) -> None:
     assert result.exit_code == 0
     payload = json.loads(result.stdout)
     assert payload["adapter"]["name"] == "csv"
-    assert payload["adapter"]["operations"] == ["count", "inventory", "read"]
+    assert payload["adapter"]["operations"] == ["count", "filter", "inventory", "read"]
     dataset = payload["datasets"][0]
     assert dataset["dataset"]["id"] == "water-mains"
     assert dataset["feature_count"] == 2

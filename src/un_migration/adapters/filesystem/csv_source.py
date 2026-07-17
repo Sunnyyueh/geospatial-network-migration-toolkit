@@ -20,6 +20,16 @@ from un_migration.domain.schema import (
     FieldSchema,
     FieldType,
 )
+from un_migration.filters.ast import (
+    And,
+    Compare,
+    Expression,
+    InList,
+    IsNull,
+    Not,
+    Or,
+)
+from un_migration.filters.evaluate import evaluate
 from un_migration.ports.source import (
     AdapterCapabilities,
     Record,
@@ -107,17 +117,20 @@ class CsvSourceReader:
     def capabilities(self) -> AdapterCapabilities:
         return AdapterCapabilities(
             adapter_name="csv",
-            operations=frozenset({"inventory", "count", "read"}),
+            operations=frozenset({"inventory", "count", "read", "filter"}),
         )
 
     @staticmethod
-    def _require_no_filter(filter_expression: object | None) -> None:
-        if filter_expression is not None:
-            raise CapabilityError(
-                code="adapter.filter-unsupported",
-                message="CSV source filters require the filter AST.",
-                guidance="Remove the filter until filter support is configured.",
-            )
+    def _filter(filter_expression: object | None) -> Expression | None:
+        if filter_expression is None:
+            return None
+        if isinstance(filter_expression, (Compare, InList, IsNull, Not, And, Or)):
+            return filter_expression
+        raise CapabilityError(
+            code="adapter.filter-unsupported",
+            message="CSV source received an unsupported filter object.",
+            guidance="Parse filter text into the toolkit filter AST first.",
+        )
 
     def _config(self, dataset_id: DatasetId) -> DatasetConfig:
         try:
@@ -235,8 +248,10 @@ class CsvSourceReader:
         dataset: DatasetRef,
         filter_expression: object | None,
     ) -> int:
-        self._require_no_filter(filter_expression)
-        return self.inventory(dataset).feature_count
+        return sum(
+            len(batch)
+            for batch in self.read_batches(dataset, filter_expression, batch_size=1000)
+        )
 
     @staticmethod
     def _convert(value: str, field_type: FieldType) -> object:
@@ -260,7 +275,7 @@ class CsvSourceReader:
         filter_expression: object | None,
         batch_size: int,
     ) -> Iterator[RecordBatch]:
-        self._require_no_filter(filter_expression)
+        expression = self._filter(filter_expression)
         if batch_size <= 0:
             raise ConfigurationError(
                 code="runtime.batch-size",
@@ -285,6 +300,8 @@ class CsvSourceReader:
                 field.name: self._convert(value.strip(), field.type)
                 for field, value in zip(inventory.fields, row, strict=True)
             }
+            if expression is not None and not evaluate(expression, record):
+                continue
             batch.append(MappingProxyType(record))
             if len(batch) == batch_size:
                 yield tuple(batch)
