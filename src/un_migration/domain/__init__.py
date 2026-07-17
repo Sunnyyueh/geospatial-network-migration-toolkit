@@ -13,6 +13,13 @@ from un_migration.domain.errors import (
     TransformationError,
     ValidationExecutionError,
 )
+from un_migration.domain.findings import (
+    Evidence,
+    Finding,
+    FindingCollection,
+    RuleScope,
+    ValidationRule,
+)
 from un_migration.domain.identity import (
     ArtifactId,
     DatasetId,
@@ -57,9 +64,12 @@ __all__ = [
     "DeploymentError",
     "DomainValue",
     "ErrorContext",
+    "Evidence",
     "FieldSchema",
     "FieldType",
     "FilterSyntaxError",
+    "Finding",
+    "FindingCollection",
     "FindingId",
     "FindingStatus",
     "FixedClock",
@@ -71,6 +81,7 @@ __all__ = [
     "MappingError",
     "MigrationError",
     "NotificationError",
+    "RuleScope",
     "RunId",
     "RunState",
     "SequenceIdGenerator",
@@ -82,6 +93,7 @@ __all__ = [
     "TransformationError",
     "Uuid7LikeGenerator",
     "ValidationExecutionError",
+    "ValidationRule",
     "can_transition",
     "highest_severity",
 ]
