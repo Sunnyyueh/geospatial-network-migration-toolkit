@@ -51,6 +51,13 @@ from un_migration.domain.schema import (
     GeometrySchema,
     GeometryType,
 )
+from un_migration.domain.serialization import (
+    JSONScalar,
+    JSONValue,
+    canonical_json,
+    fingerprint,
+    to_primitive,
+)
 from un_migration.domain.status import (
     AcceptanceStatus,
     FindingStatus,
@@ -92,6 +99,8 @@ __all__ = [
     "IdGenerator",
     "IntegrityError",
     "InventoryError",
+    "JSONScalar",
+    "JSONValue",
     "MappingError",
     "MigrationError",
     "MigrationPlan",
@@ -115,5 +124,8 @@ __all__ = [
     "ValidationExecutionError",
     "ValidationRule",
     "can_transition",
+    "canonical_json",
+    "fingerprint",
     "highest_severity",
+    "to_primitive",
 ]
