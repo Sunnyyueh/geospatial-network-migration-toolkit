@@ -10,6 +10,20 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
 authors = [{ name = "Sunny Yueh" }]
+keywords = ["gis", "geospatial", "migration", "network", "utility"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: GIS",
+]
 dependencies = [
   "jinja2>=3.1,<4",
   "pydantic>=2.7,<3",
@@ -31,6 +45,11 @@ dev = [
 
 [project.scripts]
 un-migrate = "un_migration.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/Sunnyyueh/geospatial-network-migration-toolkit"
+Issues = "https://github.com/Sunnyyueh/geospatial-network-migration-toolkit/issues"
+Source = "https://github.com/Sunnyyueh/geospatial-network-migration-toolkit"
 
 [tool.hatch.version]
 path = "src/un_migration/_version.py"
