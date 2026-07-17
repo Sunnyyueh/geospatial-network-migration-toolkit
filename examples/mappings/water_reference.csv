@@ -1,0 +1,4 @@
+schema_version,source_dataset,target_dataset,source_field,target_field,target_type,required,null_policy,default,transform,transform_parameters
+1,water-mains,utility-lines,asset_id,asset_identifier,string,true,reject,,trim,"{""collapse"":true}"
+1,water-mains,utility-lines,diameter,diameter_mm,integer,false,default,0,cast,"{""to"":""integer""}"
+1,water-mains,utility-lines,material,material_code,string,false,allow,,uppercase,{}
