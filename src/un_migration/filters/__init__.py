@@ -13,6 +13,7 @@ from un_migration.filters.ast import (
     Scalar,
     normalize,
 )
+from un_migration.filters.evaluate import evaluate
 from un_migration.filters.parser import parse_filter, validate_filter_fields
 
 __all__ = [
@@ -28,6 +29,7 @@ __all__ = [
     "Or",
     "Parameter",
     "Scalar",
+    "evaluate",
     "normalize",
     "parse_filter",
     "validate_filter_fields",
