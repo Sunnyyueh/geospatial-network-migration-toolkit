@@ -10,14 +10,20 @@ from un_migration.mapping.reference import (
     load_reference,
     normalize_reference,
 )
+from un_migration.mapping.validation import (
+    MappingValidationResult,
+    validate_mapping,
+)
 
 __all__ = [
     "REFERENCE_HEADERS",
     "DatasetMapping",
     "FieldMapping",
+    "MappingValidationResult",
     "NullPolicy",
     "ReferenceTable",
     "TransformSpec",
     "load_reference",
     "normalize_reference",
+    "validate_mapping",
 ]
