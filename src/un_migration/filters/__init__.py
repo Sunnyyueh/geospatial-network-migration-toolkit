@@ -15,11 +15,13 @@ from un_migration.filters.ast import (
 )
 from un_migration.filters.evaluate import evaluate
 from un_migration.filters.parser import parse_filter, validate_filter_fields
+from un_migration.filters.sql import CompiledSql, SqlDialect, compile_sql
 
 __all__ = [
     "And",
     "Compare",
     "CompareOperator",
+    "CompiledSql",
     "Expression",
     "Field",
     "InList",
@@ -29,6 +31,8 @@ __all__ = [
     "Or",
     "Parameter",
     "Scalar",
+    "SqlDialect",
+    "compile_sql",
     "evaluate",
     "normalize",
     "parse_filter",
