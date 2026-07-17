@@ -1,3 +1,4 @@
+from un_migration.domain.artifacts import Artifact, ArtifactKind, Checksum
 from un_migration.domain.errors import (
     CapabilityError,
     ConfigurationError,
@@ -53,8 +54,11 @@ from un_migration.domain.time import Clock, FixedClock, SystemClock
 
 __all__ = [
     "AcceptanceStatus",
+    "Artifact",
     "ArtifactId",
+    "ArtifactKind",
     "CapabilityError",
+    "Checksum",
     "Clock",
     "CodedDomain",
     "ConfigurationError",
