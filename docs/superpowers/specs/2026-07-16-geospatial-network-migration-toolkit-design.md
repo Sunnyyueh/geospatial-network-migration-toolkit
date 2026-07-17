@@ -1,6 +1,6 @@
 # Geospatial Network Migration Toolkit v1.0 Design
 
-Status: Draft for written review
+Status: Approved
 
 Date: 2026-07-16
 
